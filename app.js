@@ -4,11 +4,11 @@ const fs = require("fs");
 let server = http.createServer((req, res) => {
   let url = req.url;
   let method = req.method;
-  let msg = "";
+  let msg = "Check";
   if (url === "/") {
     res.write("<html>");
     res.write("<head><title>My Home Page</title></head>");
-    res.write(`<h1>${msg}</h1>`);
+    res.write(`<h1>${fs.readFileSync('./message.txt')}</h1>`);
     res.write(
       '<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Enter</button></input></form></body>'
     );
@@ -24,12 +24,13 @@ let server = http.createServer((req, res) => {
     return req.on("end", () => {
       const parsedBody = Buffer.concat(body).toString();
       const message = parsedBody.split("=")[1];
+      msg=message;
       fs.writeFile("message.txt", message, (err) => {
         res.statusCode = 302;
         res.setHeader("location", "/");
         return res.end();
       });
-      msg = message;
+      
     });
   }
   if (url === "/home") {
