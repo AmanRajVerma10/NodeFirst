@@ -1,7 +1,23 @@
 const http = require("http");
+const fs= require("fs");
 
 let server = http.createServer((req, res) => {
   let url=req.url;
+  let method=req.method;
+  if(url==='/'){
+    res.write('<html>');
+    res.write('<head><title>My Home Page</title></head>');
+    res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Enter</button></input></form></body>')    
+    res.write('</html>');
+    return res.end();
+  }
+  if(url==='/message' && method==='POST'){
+    fs.writeFileSync('message.txt','Dummy');
+    res.statusCode=302;
+    res.setHeader('location','/');
+    return res.end();
+
+  }
   if(url==='/home'){
     res.setHeader('Content-Type','text/html');
     res.write('<html>');
